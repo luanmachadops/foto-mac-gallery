@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -180,10 +179,11 @@ const Gallery = () => {
                 <Upload className="w-4 h-4 mr-2" />
                 {uploading ? 'Enviando...' : 'Upload Fotos'}
               </Button>
-              <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                <Share2 className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+              <Button 
+                variant="outline" 
+                className="border-white/20 text-white hover:bg-white/10"
+                onClick={() => navigate(`/gallery/${id}/manage`)}
+              >
                 <Settings className="w-4 h-4" />
               </Button>
             </div>

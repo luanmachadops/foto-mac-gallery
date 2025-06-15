@@ -13,6 +13,8 @@ import Gallery from "./pages/Gallery";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import GalleryManagement from "./pages/GalleryManagement";
+import SharedGallery from "./pages/SharedGallery";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,15 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            <Route 
+              path="/gallery/:id/manage" 
+              element={
+                <ProtectedRoute>
+                  <GalleryManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/shared/:id" element={<SharedGallery />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
