@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Camera, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const EmailConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -85,12 +86,12 @@ const EmailConfirmation = () => {
               )}
               
               {status === 'error' && (
-                <button
+                <Button
                   onClick={() => navigate('/auth')}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-2 rounded-md transition-colors"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                 >
                   Voltar ao Login
-                </button>
+                </Button>
               )}
             </div>
           </CardContent>

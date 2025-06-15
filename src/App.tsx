@@ -8,6 +8,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import CreateGallery from "./pages/CreateGallery";
+import Gallery from "./pages/Gallery";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
@@ -30,6 +32,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/create-gallery" 
+              element={
+                <ProtectedRoute>
+                  <CreateGallery />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/gallery/:id" 
+              element={
+                <ProtectedRoute>
+                  <Gallery />
                 </ProtectedRoute>
               } 
             />
