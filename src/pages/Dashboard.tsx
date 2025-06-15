@@ -211,7 +211,11 @@ const Dashboard = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {galleries.map((gallery) => (
-              <Card key={gallery.id} className="glass border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all cursor-pointer">
+              <Card 
+                key={gallery.id} 
+                className="glass border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all cursor-pointer"
+                onClick={() => navigate(`/gallery/${gallery.id}`)}
+              >
                 <CardHeader>
                   <CardTitle className="text-white">{gallery.title}</CardTitle>
                   <CardDescription className="text-gray-300">
@@ -222,14 +226,9 @@ const Dashboard = () => {
                   <p className="text-sm text-gray-400 mb-2">
                     Criado em: {new Date(gallery.created_at).toLocaleDateString('pt-BR')}
                   </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full border-white/20 text-white hover:bg-white/10"
-                    onClick={() => navigate(`/gallery/${gallery.id}`)}
-                  >
-                    Ver Galeria
-                  </Button>
+                  <p className="text-sm text-gray-400">
+                    Email: {gallery.client_email}
+                  </p>
                 </CardContent>
               </Card>
             ))}
