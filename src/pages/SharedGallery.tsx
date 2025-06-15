@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Camera, Heart, Download, Lock, User, Mail } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Camera, Heart, Download, Lock, User, Mail, Eye, Calendar, CheckCircle, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Gallery {
@@ -41,6 +42,9 @@ const SharedGallery = () => {
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'carousel'>('grid');
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -126,6 +130,11 @@ const SharedGallery = () => {
     setSelectedPhotos(newSelected);
   };
 
+  const openCarousel = (photoIndex: number) => {
+    setSelectedPhotoIndex(photoIndex);
+    setViewMode('carousel');
+  };
+
   const submitSelections = async () => {
     if (!clientName || !clientEmail) {
       toast.error('Preencha seu nome e email');
@@ -161,6 +170,7 @@ const SharedGallery = () => {
       if (error) throw error;
 
       toast.success(`${selectedPhotos.size} foto(s) selecionada(s) com sucesso!`);
+      setIsSubmitted(true);
       
     } catch (error: any) {
       console.error('Erro ao salvar seleções:', error);
@@ -173,20 +183,23 @@ const SharedGallery = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Carregando galeria...</div>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          <div className="text-white text-xl">Carregando galeria...</div>
+        </div>
       </div>
     );
   }
 
   if (passwordRequired) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
         <Card className="glass border-white/20 bg-white/10 backdrop-blur-md w-full max-w-md">
           <CardHeader className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg mx-auto mb-4">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-white">Galeria Protegida</CardTitle>
+            <CardTitle className="text-white text-2xl">Galeria Protegida</CardTitle>
             <p className="text-gray-300">Esta galeria requer uma senha para acesso</p>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -216,7 +229,88 @@ const SharedGallery = () => {
   if (!gallery) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Galeria não encontrada</div>
+        <div className="text-center">
+          <Camera className="w-24 h-24 text-gray-400 mx-auto mb-4" />
+          <div className="text-white text-2xl mb-2">Galeria não encontrada</div>
+          <p className="text-gray-300">Verifique se o link está correto</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+        <Card className="glass border-white/20 bg-white/10 backdrop-blur-md w-full max-w-2xl">
+          <CardContent className="flex flex-col items-center justify-center py-12 px-6 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-6">
+              <CheckCircle className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Seleções Enviadas!</h2>
+            <p className="text-gray-300 text-lg mb-2">
+              Obrigado, {clientName}! Suas {selectedPhotos.size} foto(s) selecionada(s) foram enviadas com sucesso.
+            </p>
+            <p className="text-gray-400 mb-6">
+              Você receberá um email de confirmação em {clientEmail}
+            </p>
+            <Button
+              onClick={() => {
+                setIsSubmitted(false);
+                setSelectedPhotos(new Set());
+                setClientName('');
+                setClientEmail('');
+              }}
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              Fazer Nova Seleção
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (viewMode === 'carousel') {
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+        <Button
+          onClick={() => setViewMode('grid')}
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 z-60 text-white hover:bg-white/20"
+        >
+          <X className="w-6 h-6" />
+        </Button>
+        
+        <Carousel className="w-full max-w-6xl mx-auto">
+          <CarouselContent>
+            {photos.map((photo, index) => (
+              <CarouselItem key={photo.id} className="flex items-center justify-center">
+                <div className="relative">
+                  <img
+                    src={photo.file_url}
+                    alt={photo.file_name}
+                    className="max-h-[80vh] max-w-[90vw] object-contain"
+                  />
+                  <Button
+                    onClick={() => togglePhotoSelection(photo.id)}
+                    className={`absolute bottom-4 right-4 ${
+                      selectedPhotos.has(photo.id)
+                        ? 'bg-green-500 hover:bg-green-600'
+                        : 'bg-white/20 hover:bg-white/30'
+                    }`}
+                  >
+                    <Heart className={`w-4 h-4 mr-2 ${selectedPhotos.has(photo.id) ? 'fill-current' : ''}`} />
+                    {selectedPhotos.has(photo.id) ? 'Selecionada' : 'Selecionar'}
+                  </Button>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4" />
+          <CarouselNext className="right-4" />
+        </Carousel>
       </div>
     );
   }
@@ -224,19 +318,26 @@ const SharedGallery = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="glass border-b border-white/20 bg-white/10 backdrop-blur-md">
+      <header className="glass border-b border-white/20 bg-white/5 backdrop-blur-md sticky top-0 z-40">
         <div className="container mx-auto px-6 py-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg mb-4">
               <Camera className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">{gallery.title}</h1>
+            <h1 className="text-4xl font-bold text-white mb-2">{gallery.title}</h1>
             {gallery.description && (
-              <p className="text-gray-300 mb-4">{gallery.description}</p>
+              <p className="text-gray-300 mb-4 text-lg max-w-2xl mx-auto">{gallery.description}</p>
             )}
-            <p className="text-sm text-gray-400">
-              Criado em {new Date(gallery.created_at).toLocaleDateString('pt-BR')}
-            </p>
+            <div className="flex items-center justify-center space-x-6 text-sm text-gray-400">
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 mr-2" />
+                Criado em {new Date(gallery.created_at).toLocaleDateString('pt-BR')}
+              </div>
+              <div className="flex items-center">
+                <Eye className="w-4 h-4 mr-2" />
+                {photos.length} foto{photos.length !== 1 ? 's' : ''}
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -246,24 +347,24 @@ const SharedGallery = () => {
         {/* Informações do Cliente */}
         <Card className="glass border-white/20 bg-white/10 backdrop-blur-md mb-8">
           <CardHeader>
-            <CardTitle className="text-white">Suas Informações</CardTitle>
+            <CardTitle className="text-white text-xl">Suas Informações</CardTitle>
             <p className="text-gray-300">Preencha para salvar suas seleções</p>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label className="text-white flex items-center">
+              <Label className="text-white flex items-center text-sm font-medium">
                 <User className="w-4 h-4 mr-2" />
-                Nome
+                Nome Completo
               </Label>
               <Input
-                placeholder="Seu nome"
+                placeholder="Seu nome completo"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 h-11"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-white flex items-center">
+              <Label className="text-white flex items-center text-sm font-medium">
                 <Mail className="w-4 h-4 mr-2" />
                 Email
               </Label>
@@ -272,101 +373,122 @@ const SharedGallery = () => {
                 placeholder="seu@email.com"
                 value={clientEmail}
                 onChange={(e) => setClientEmail(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 h-11"
               />
             </div>
           </CardContent>
         </Card>
 
-        {/* Contador de Seleções */}
-        {selectedPhotos.size > 0 && (
-          <div className="fixed bottom-6 right-6 z-50">
-            <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
-              <CardContent className="p-4 flex items-center space-x-4">
-                <Badge variant="secondary" className="bg-green-500 text-white">
-                  {selectedPhotos.size} selecionada{selectedPhotos.size !== 1 ? 's' : ''}
-                </Badge>
-                <Button
-                  onClick={submitSelections}
-                  disabled={submitting}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                >
-                  {submitting ? 'Salvando...' : 'Salvar Seleções'}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        {/* Instruções */}
+        <Card className="glass border-white/20 bg-white/10 backdrop-blur-md mb-8">
+          <CardContent className="p-6 text-center">
+            <h3 className="text-lg font-semibold text-white mb-2">Como selecionar suas fotos favoritas</h3>
+            <p className="text-gray-300">
+              Clique nas fotos que você gostaria de receber. As fotos selecionadas terão um coração verde. 
+              Você pode clicar em qualquer foto para visualizá-la em tela cheia.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Grid de Fotos */}
         {photos.length === 0 ? (
           <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Camera className="w-16 h-16 text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Nenhuma foto encontrada</h3>
-              <p className="text-gray-300 text-center">
-                Esta galeria ainda não possui fotos
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <Camera className="w-20 h-20 text-gray-400 mb-6" />
+              <h3 className="text-2xl font-semibold text-white mb-3">Nenhuma foto encontrada</h3>
+              <p className="text-gray-300 text-center max-w-md">
+                Esta galeria ainda não possui fotos. Entre em contato com o fotógrafo para mais informações.
               </p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {photos.map((photo) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {photos.map((photo, index) => (
               <Card 
                 key={photo.id} 
-                className={`glass border-white/20 bg-white/10 backdrop-blur-md overflow-hidden cursor-pointer transition-all hover:scale-105 ${
-                  selectedPhotos.has(photo.id) ? 'ring-2 ring-green-500' : ''
+                className={`glass border-white/20 bg-white/10 backdrop-blur-md overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl ${
+                  selectedPhotos.has(photo.id) ? 'ring-2 ring-green-500 shadow-green-500/25' : ''
                 }`}
-                onClick={() => togglePhotoSelection(photo.id)}
               >
-                <div className="aspect-square relative">
+                <div className="aspect-square relative group">
                   <img
                     src={photo.thumbnail_url || photo.file_url}
                     alt={photo.file_name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     loading="lazy"
+                    onClick={() => openCarousel(index)}
                   />
                   
                   {/* Overlay de Seleção */}
-                  <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${
-                    selectedPhotos.has(photo.id) ? 'bg-green-500/20' : 'bg-black/20 opacity-0 hover:opacity-100'
-                  }`}>
-                    {selectedPhotos.has(photo.id) ? (
-                      <div className="bg-green-500 rounded-full p-2">
-                        <Heart className="w-6 h-6 text-white fill-current" />
-                      </div>
-                    ) : (
-                      <div className="bg-white/20 rounded-full p-2">
-                        <Heart className="w-6 h-6 text-white" />
-                      </div>
-                    )}
+                  <div 
+                    className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
+                      selectedPhotos.has(photo.id) 
+                        ? 'bg-green-500/30' 
+                        : 'bg-black/20 opacity-0 group-hover:opacity-100'
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      togglePhotoSelection(photo.id);
+                    }}
+                  >
+                    <div className={`rounded-full p-3 transition-all duration-300 ${
+                      selectedPhotos.has(photo.id)
+                        ? 'bg-green-500 scale-110'
+                        : 'bg-white/20 group-hover:bg-white/30'
+                    }`}>
+                      <Heart className={`w-6 h-6 text-white transition-all duration-300 ${
+                        selectedPhotos.has(photo.id) ? 'fill-current scale-110' : ''
+                      }`} />
+                    </div>
                   </div>
 
                   {/* Indicador de Seleção */}
                   {selectedPhotos.has(photo.id) && (
-                    <div className="absolute top-2 right-2">
-                      <Badge variant="secondary" className="bg-green-500 text-white">
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white border-0 shadow-lg">
                         <Heart className="w-3 h-3 mr-1 fill-current" />
                         Selecionada
                       </Badge>
                     </div>
                   )}
+
+                  {/* Botão de visualizar */}
+                  <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="bg-black/40 hover:bg-black/60 text-white h-8 px-2"
+                      onClick={() => openCarousel(index)}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ))}
           </div>
         )}
 
-        {/* Instruções */}
-        <Card className="glass border-white/20 bg-white/10 backdrop-blur-md mt-8">
-          <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold text-white mb-2">Como selecionar suas fotos favoritas</h3>
-            <p className="text-gray-300">
-              Clique nas fotos que você gostaria de receber. As fotos selecionadas terão um coração verde. 
-              Preencha seus dados acima e clique em "Salvar Seleções" quando terminar.
-            </p>
-          </CardContent>
-        </Card>
+        {/* Contador de Seleções - Fixo */}
+        {selectedPhotos.size > 0 && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <Card className="glass border-white/20 bg-white/10 backdrop-blur-md shadow-xl">
+              <CardContent className="p-4 flex items-center space-x-4">
+                <Badge variant="secondary" className="bg-green-500 text-white text-sm px-3 py-1">
+                  <Heart className="w-4 h-4 mr-2 fill-current" />
+                  {selectedPhotos.size} selecionada{selectedPhotos.size !== 1 ? 's' : ''}
+                </Badge>
+                <Button
+                  onClick={submitSelections}
+                  disabled={submitting || !clientName || !clientEmail}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50"
+                >
+                  {submitting ? 'Enviando...' : 'Enviar Seleções'}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
     </div>
   );
