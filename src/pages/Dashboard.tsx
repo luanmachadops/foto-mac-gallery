@@ -105,37 +105,37 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Carregando...</div>
+      <div className="min-h-screen professional-gradient flex items-center justify-center">
+        <div className="text-white text-xl animate-pulse">Carregando...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen professional-gradient">
       {/* Header */}
-      <header className="glass border-b border-white/20 bg-white/10 backdrop-blur-md">
+      <header className="glass border-b border-white/20 bg-white/10 backdrop-blur-md animate-fade-in">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+          <div className="flex items-center space-x-4 animate-slide-in-left">
+            <div className="inline-flex items-center justify-center w-10 h-10 gradient-neutral rounded-lg shadow-lg">
               <Camera className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">FotoProof</h1>
-              <p className="text-sm text-gray-300">
+              <p className="text-sm text-slate-300">
                 Olá, {profile?.first_name || user?.email}
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10">
-              <Crown className="w-4 h-4 text-yellow-400" />
+          <div className="flex items-center space-x-4 animate-slide-in-right">
+            <div className="flex items-center space-x-2 px-3 py-1 rounded-full glass hover-glow transition-all duration-300">
+              <Crown className="w-4 h-4 text-blue-400" />
               <span className="text-sm text-white">{getPlanName(subscription?.plan || 'free')}</span>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/settings')} className="hover-lift">
               <Settings className="w-4 h-4 text-white" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+            <Button variant="ghost" size="sm" onClick={handleSignOut} className="hover-lift">
               <LogOut className="w-4 h-4 text-white" />
             </Button>
           </div>
@@ -146,30 +146,30 @@ const Dashboard = () => {
       <main className="container mx-auto px-6 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
+          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md hover-lift animate-fade-up">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-white">Total de Galerias</CardTitle>
-              <Camera className="h-4 w-4 text-purple-400" />
+              <Camera className="h-4 w-4 text-slate-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{galleries.length}</div>
             </CardContent>
           </Card>
           
-          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
+          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md hover-lift animate-fade-up" style={{ animationDelay: '0.1s' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-white">Plano Ativo</CardTitle>
-              <Crown className="h-4 w-4 text-yellow-400" />
+              <Crown className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{getPlanName(subscription?.plan || 'free')}</div>
             </CardContent>
           </Card>
 
-          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
+          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md hover-lift animate-fade-up" style={{ animationDelay: '0.2s' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-white">Status</CardTitle>
-              <Users className="h-4 w-4 text-green-400" />
+              <Users className="h-4 w-4 text-emerald-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -180,11 +180,11 @@ const Dashboard = () => {
         </div>
 
         {/* Galleries Section */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 animate-fade-up" style={{ animationDelay: '0.3s' }}>
           <h2 className="text-2xl font-bold text-white">Suas Galerias</h2>
           <Button 
             onClick={() => navigate('/create-gallery')}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            className="gradient-neutral hover:shadow-xl hover:shadow-slate-500/25 transition-all duration-300 hover:-translate-y-1"
           >
             <Plus className="w-4 h-4 mr-2" />
             Nova Galeria
@@ -192,16 +192,16 @@ const Dashboard = () => {
         </div>
 
         {galleries.length === 0 ? (
-          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
+          <Card className="glass border-white/20 bg-white/10 backdrop-blur-md animate-scale-in">
             <CardContent className="flex flex-col items-center justify-center py-12">
-              <Camera className="w-16 h-16 text-gray-400 mb-4" />
+              <Camera className="w-16 h-16 text-slate-400 mb-4 animate-float" />
               <h3 className="text-xl font-semibold text-white mb-2">Nenhuma galeria criada</h3>
-              <p className="text-gray-300 text-center mb-6">
+              <p className="text-slate-300 text-center mb-6">
                 Comece criando sua primeira galeria para compartilhar fotos com seus clientes
               </p>
               <Button 
                 onClick={() => navigate('/create-gallery')}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                className="gradient-neutral hover:shadow-xl hover:shadow-slate-500/25 transition-all duration-300 hover:-translate-y-1"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Criar Primeira Galeria
@@ -210,23 +210,24 @@ const Dashboard = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleries.map((gallery) => (
+            {galleries.map((gallery, index) => (
               <Card 
                 key={gallery.id} 
-                className="glass border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all cursor-pointer"
+                className="glass border-white/20 bg-white/10 backdrop-blur-md hover:bg-white/20 hover-lift cursor-pointer animate-fade-up"
+                style={{ animationDelay: `${0.1 * index}s` }}
                 onClick={() => navigate(`/gallery/${gallery.id}`)}
               >
                 <CardHeader>
                   <CardTitle className="text-white">{gallery.title}</CardTitle>
-                  <CardDescription className="text-gray-300">
+                  <CardDescription className="text-slate-300">
                     Cliente: {gallery.client_name}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-400 mb-2">
+                  <p className="text-sm text-slate-400 mb-2">
                     Criado em: {new Date(gallery.created_at).toLocaleDateString('pt-BR')}
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-slate-400">
                     Email: {gallery.client_email}
                   </p>
                 </CardContent>

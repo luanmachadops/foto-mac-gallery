@@ -51,21 +51,21 @@ const EmailConfirmation = () => {
   }, [searchParams, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl mb-4">
+    <div className="min-h-screen professional-gradient flex items-center justify-center p-4">
+      <div className="w-full max-w-md animate-scale-in">
+        <div className="text-center mb-8 animate-fade-up">
+          <div className="inline-flex items-center justify-center w-16 h-16 gradient-neutral rounded-xl mb-4 shadow-lg animate-float">
             <Camera className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">FotoProof</h1>
-          <p className="text-gray-300">Confirmação de Email</p>
+          <p className="text-slate-300">Confirmação de Email</p>
         </div>
 
-        <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
+        <Card className="glass border-white/20 bg-white/10 backdrop-blur-md animate-fade-up" style={{ animationDelay: '0.2s' }}>
           <CardHeader>
             <CardTitle className="text-white text-center flex items-center justify-center gap-2">
               {status === 'loading' && <Loader2 className="w-5 h-5 animate-spin" />}
-              {status === 'success' && <CheckCircle className="w-5 h-5 text-green-400" />}
+              {status === 'success' && <CheckCircle className="w-5 h-5 text-emerald-400" />}
               {status === 'error' && <XCircle className="w-5 h-5 text-red-400" />}
               
               {status === 'loading' && 'Confirmando email...'}
@@ -75,12 +75,12 @@ const EmailConfirmation = () => {
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <p className="text-gray-300 mb-4">
+              <p className="text-slate-300 mb-4">
                 {message}
               </p>
               
               {status === 'success' && (
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-slate-400">
                   Redirecionando para a página inicial...
                 </p>
               )}
@@ -88,7 +88,7 @@ const EmailConfirmation = () => {
               {status === 'error' && (
                 <Button
                   onClick={() => navigate('/auth')}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  className="gradient-neutral hover:shadow-xl hover:shadow-slate-500/25 transition-all duration-300 hover:-translate-y-1"
                 >
                   Voltar ao Login
                 </Button>
