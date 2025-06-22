@@ -8,12 +8,18 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
       <Header />
       <Hero />
-      <Features />
-      <Testimonials />
-      <Pricing />
+      <div className="animate-fade-up" style={{ animationDelay: '0.6s' }}>
+        <Features />
+      </div>
+      <div className="animate-fade-up" style={{ animationDelay: '0.8s' }}>
+        <Testimonials />
+      </div>
+      <div className="animate-fade-up" style={{ animationDelay: '1s' }}>
+        <Pricing />
+      </div>
       <Footer />
     </div>
   );
