@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -10,8 +9,9 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Camera, ArrowLeft, Share2, Eye, Download, Copy, Calendar, Lock, Users } from 'lucide-react';
+import { Camera, ArrowLeft, Share2, Eye, Download, Copy, Calendar, Lock, Users, FileDown } from 'lucide-react';
 import { toast } from 'sonner';
+import ExportModal from '@/components/ExportModal';
 
 interface Gallery {
   id: string;
@@ -51,6 +51,7 @@ const GalleryManagement = () => {
   const [password, setPassword] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   useEffect(() => {
     if (!id || !user) return;
@@ -134,6 +135,13 @@ const GalleryManagement = () => {
     };
   };
 
+  const getSelectedPhotosForExport = () => {
+    return selections.map(selection => ({
+      id: selection.id,
+      file_name: selection.photo.file_name
+    }));
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
@@ -179,14 +187,26 @@ const GalleryManagement = () => {
               </div>
             </div>
 
-            <Button
-              onClick={() => navigate(`/gallery/${gallery.id}`)}
-              variant="outline"
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              <Eye className="w-4 h-4 mr-2" />
-              Ver Galeria
-            </Button>
+            <div className="flex gap-2">
+              {selections.length > 0 && (
+                <Button
+                  onClick={() => setShowExportModal(true)}
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
+                  <FileDown className="w-4 h-4 mr-2" />
+                  Exportar Seleções
+                </Button>
+              )}
+              <Button
+                onClick={() => navigate(`/gallery/${gallery.id}`)}
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/10"
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                Ver Galeria
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -315,10 +335,24 @@ const GalleryManagement = () => {
         {/* Seleções dos Clientes */}
         <Card className="glass border-white/20 bg-white/10 backdrop-blur-md">
           <CardHeader>
-            <CardTitle className="text-white">Seleções dos Clientes</CardTitle>
-            <CardDescription className="text-gray-300">
-              Fotos selecionadas pelos seus clientes
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-white">Seleções dos Clientes</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Fotos selecionadas pelos seus clientes
+                </CardDescription>
+              </div>
+              {selections.length > 0 && (
+                <Button
+                  onClick={() => setShowExportModal(true)}
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
+                  <FileDown className="w-4 h-4 mr-2" />
+                  Exportar Seleções
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {selections.length === 0 ? (
@@ -374,6 +408,13 @@ const GalleryManagement = () => {
           </CardContent>
         </Card>
       </main>
+
+      {/* Export Modal */}
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        selectedPhotos={getSelectedPhotosForExport()}
+      />
     </div>
   );
 };
